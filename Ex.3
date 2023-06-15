@@ -1,0 +1,19 @@
+library(ggplot2)
+library(dplyr)
+
+# 1. Ler o arquivo de dados
+data <- read.delim("GENDER_EMP_19032023152556091.txt", sep = "\t")
+
+# 2. Selecionar dados para a Finlândia em 2015
+finland_data <- filter(data, Country == "Finland" & Year == 2015)
+
+# 3. Filtrar dados para grupos etários 15-24, 25-54 e 55-64
+filtered_data <- filter(finland_data, Age_group %in% c("15-24", "25-54", "55-64"))
+
+# 4. Criar o gráfico de barras
+ggplot(filtered_data, aes(x = Age_group, y = EMP3, fill = Sex)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Unemployment Rate by Sex and Age Group in Finland (2015)",
+       x = "Age Group", y = "Unemployment Rate", fill = "Sex") +
+  scale_fill_manual(values = c("blue", "pink")) +
+  theme_bw()
