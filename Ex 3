@@ -1,0 +1,36 @@
+# Definir semente
+set.seed(4728)
+
+# Parâmetros
+lambda <- 21
+k <- 1550
+
+# Gerar amostra da distribuição exponencial
+amostra <- rexp(k, rate = 1/lambda)
+
+# Calcular a soma cumulativa
+soma_cumulativa <- cumsum(amostra)
+
+# Calcular T
+T <- ceiling(soma_cumulativa[k])
+
+# Dividir o intervalo em subintervalos de amplitude unitária
+subintervalos <- seq(0, T, by = 1)
+
+# Contabilizar o número de acontecimentos em cada subintervalo
+contagem <- tabulate(findInterval(soma_cumulativa, subintervalos))
+
+# Calcular a média do número de acontecimentos por subintervalo
+media <- mean(contagem)
+
+# Calcular o valor esperado teórico do número de acontecimentos por subintervalo
+valor_esperado <- k * (1 - exp(-lambda))
+
+# Calcular o desvio absoluto
+desvio_absoluto <- abs(media - valor_esperado)
+
+# Arredondar o desvio absoluto
+desvio_absoluto_arredondado <- round(desvio_absoluto, 4)
+
+# Imprimir o resultado
+print(desvio_absoluto_arredondado)
