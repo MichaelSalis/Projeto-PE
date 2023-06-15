@@ -1,0 +1,24 @@
+# Carregar os pacotes necessários
+library(tidyverse)
+library(ggplot2)
+
+# Ler o arquivo CSV
+dados <- read_csv("TIME_USE_24092022.csv")
+
+# Eliminar os registros referentes à África do Sul
+dados_filtrados <- dados %>% filter(PAIS != "África do Sul")
+
+# Filtrar os dados apenas para mulheres e as ocupações desejadas (Lazer e Trabalho não remunerado)
+dados_mulheres <- dados_filtrados %>% filter(GENERO == "Mulher") %>%
+  filter(OCUPACAO %in% c("Lazer", "Trabalho não remunerado"))
+
+# Criar o gráfico
+grafico <- ggplot(dados_mulheres, aes(x = OCUPACAO, y = TEMPO)) +
+  geom_boxplot(fill = "lightblue", color = "black") +
+  labs(title = "Tempo médio diário para Mulheres",
+       x = "Ocupação",
+       y = "Tempo médio diário (minutos)") +
+  theme_minimal()
+
+# Salvar o gráfico como um arquivo PDF
+ggsave("comparacao_tempos.pdf", plot = grafico, width = 8.27, height = 11.69)
