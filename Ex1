@@ -1,0 +1,31 @@
+# Install the required packages if they are not already installed
+# install.packages(c("readxl", "ggplot2"))
+
+library(readxl)
+library(ggplot2)
+
+# Read the data from the econ.xlsx file
+dados <- read_excel("econ.xlsx", sheet = "FRED")
+
+# Filter the data for years greater than or equal to 1968
+dados_filtrados <- subset(dados, tempo >= as.Date("1968-01-01"))
+
+# Function to normalize the data
+normalizar <- function(x) {
+  return((x - mean(x)) / sd(x))
+}
+
+# Apply the normalization function to variables X1 and X2
+dados_filtrados$gcp_norm <- normalizar(dados_filtrados$gcp)
+dados_filtrados$ndesemp_norm <- normalizar(dados_filtrados$ndesemp)
+
+# Generate the plot using ggplot2
+grafico <- ggplot(dados_filtrados, aes(x = tempo)) +
+  geom_line(aes(y = gcp_norm, color = "Gastos de Consumo Pessoal")) +
+  geom_line(aes(y = ndesemp_norm, color = "Número de Desempregados")) +
+  labs(x = "Ano", y = "Valores Normalizados", color = "Variáveis") +
+  scale_color_manual(values = c("Gastos de Consumo Pessoal" = "blue", "Número de Desempregados" = "red")) +
+  theme_minimal()
+
+# Save the plot to a PDF file
+ggsave("grafico_evolucao_variaveis.pdf", plot = grafico, width = 8.27, height = 11.69)
